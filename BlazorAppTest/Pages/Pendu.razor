@@ -1,0 +1,116 @@
+﻿@page "/"
+
+<PageTitle>Jeu du pendu</PageTitle>
+
+<h3>Jeu du pendu</h3>
+
+@if(_chars is not null)
+{
+    @foreach (char c in _chars)
+    {
+        <div class="lettre">@c</div>
+    }
+}
+
+@if(_state < 8)
+{
+    <LettreComponent CharToTry="TryThisChar" />    
+}
+
+@if(_state > 0)
+{
+    <div>
+        <img src="@($"images/{_state}.png")" />
+    </div>
+}
+
+
+@code {
+    private static List<string> mots = new()
+    {
+        "ABSORPTION",
+        "ACCESSOIRE",
+        "ADMIRATEUR",
+        "AGGLOMERER",
+        "ALGORITHME",
+        "APPRECIE",
+        "ATMOSPHERE",
+        "AUTORITAIRE",
+        "BIODIVERSITE",
+        "BOULEVERSER",
+        "CARACTERISTIQUE",
+        "CATASTROPHE",
+        "CELEBRATION",
+        "CHOCOLATIER",
+        "CINEMATIQUE",
+        "CONNAISSANCE",
+        "CONSOMMATEUR",
+        "CONTEMPORAIN",
+        "CONTRIBUTION",
+        "CONVAINQUANT",
+        "COORDONNEES",
+        "COORDONNATEUR",
+        "DECLARER",
+        "DEFINITIVEMENT",
+        "DELIBERATION",
+        "DEMOGRAPHIQUE",
+        "DEPARTEMENT",
+        "DEPRECIATION",
+        "DESESPERER",
+        "DETERMINANT",
+        "DIAMETRALEMENT",
+        "DIFFAMATION",
+        "DIVERSIFIER",
+        "DOCUMENTAIRE",
+        "DOMESTIQUE",
+        "ECONOMISER",
+        "EFFICACEMENT",
+        "ELABORATION",
+        "ELECTRIQUE",
+        "EMBARQUEMENT",
+        "EMPREINTE",
+        "ENCOURAGER",
+        "ENDOMMAGER",
+        "ENREGISTREMENT",
+        "ENSEIGNEMENT",
+        "ENTRETIEN",
+        "ENVIRONNEMENT",
+        "EPOUVANTABLE",
+        "EQUILIBRER"
+    };
+
+    private string? _hidden;
+    private char[]? _chars;
+    private int _state = 0;
+
+    protected override void OnInitialized()
+    {
+        _hidden = mots[Random.Shared.Next(mots.Count)];
+        _chars = new string('_', _hidden.Length).ToCharArray();
+    }
+
+    private void TryThisChar(char c)
+    {
+        bool found = false;
+        for (int i = 0; i < _hidden!.Length; i++)
+        {
+            if(_hidden[i] == c)
+            {
+                _chars![i] = c;
+                found = true;
+            }
+        }
+
+        if (!found)
+        {
+            _state++;            
+        }
+        else
+        {
+            if (!_chars!.Contains('_'))
+            {
+                _state = 9;
+            }
+        }
+    }
+}

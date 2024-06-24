@@ -1,0 +1,42 @@
+﻿@if(_caracteres is not null && _caracteres.Count > 0)
+{
+    <div>
+        <select @bind="_selected">
+            <option hidden selected>Select one...</option>
+            @foreach (char c in _caracteres)
+            {
+                <option>@c</option>
+            }
+        </select>
+    </div>
+    <div>
+        <button @onclick="Send">Try</button>
+    </div>
+}
+
+
+@code {
+    private static string lettres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private string? _selected;
+
+    [Parameter]
+    public EventCallback<char> CharToTry { get; set; }
+
+    private List<char>? _caracteres;
+
+    protected override void OnInitialized()
+    {
+        _caracteres = lettres.ToList();
+    }
+
+    private void Send()
+    {
+        if (_selected is not null)
+        {
+            char selectedChar = _selected[0];
+            _caracteres?.Remove(selectedChar);
+            CharToTry.InvokeAsync(selectedChar);
+            _selected = null;
+        }
+    }
+}
